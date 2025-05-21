@@ -13,10 +13,7 @@ router.post(
       phone: Joi.string().required(),
       address: Joi.string().min(5).required(),
       total: Joi.number().positive().required(),
-      items: Joi.array()
-        .items(Joi.string().required())
-        .min(1)
-        .required(),
+      items: Joi.array().items(Joi.string().required()).min(1).required(),
     }),
   }),
   createOrder,
