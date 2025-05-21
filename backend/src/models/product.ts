@@ -1,6 +1,21 @@
-import { model, Schema } from 'mongoose';
+import { model, Schema, Document } from 'mongoose';
 
-const productSchema = new Schema({
+export interface IProductImage {
+  fileName: string;
+  originalName: string;
+}
+
+export interface IProduct {
+  title: string;
+  image: IProductImage;
+  category: string;
+  description?: string;
+  price: number | null;
+}
+
+export interface IProductDocument extends IProduct, Document {}
+
+const productSchema = new Schema<IProductDocument>({
   title: {
     type: String,
     required: [true, 'Поле "title" должно быть заполнено'],
@@ -36,4 +51,4 @@ const productSchema = new Schema({
   },
 });
 
-export default model('product', productSchema);
+export default model<IProductDocument>('Product', productSchema);

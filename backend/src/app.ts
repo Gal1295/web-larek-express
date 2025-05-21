@@ -9,11 +9,11 @@ import ordersRouter from './routes/order';
 import { requestLogger, errorLogger } from './middlewares/logger';
 import errorHandler from './middlewares/errorHandler';
 import NotFoundError from './errors/not-found-error';
+import { DB_ADDRESS, PORT } from './config';
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -31,7 +31,7 @@ app.use(errorHandler);
 
 const connectToMongoDB = async () => {
   try {
-    await mongoose.connect(process.env.DB_ADDRESS || 'mongodb://127.0.0.1:27017/weblarek');
+    await mongoose.connect(DB_ADDRESS);
     winston.info('Подключено к базе данных MongoDB');
   } catch (error) {
     winston.error('Ошибка подключения к базе данных:', {

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import Product from '../models/product';
+import Product, { IProduct } from '../models/product';
 import BadRequestError from '../errors/bad-request-errors';
 import ConflictError from '../errors/conflict-error';
 import InternalServerError from '../errors/internal-server-error';
@@ -7,22 +7,27 @@ import InternalServerError from '../errors/internal-server-error';
 export const getProducts = async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const products = await Product.find();
-    return res.status(200).json({
-      items: products,
-      total: products.length,
-    });
+    return res.status(200).json({ items: products });
   } catch (error) {
     return next(new InternalServerError());
   }
 };
 
-export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
+export const createProduct = async (
+  req: Request<{}, {}, IProduct>,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const {
-      title, image, category, description, price,
-    } = req.body;
+      title,
+      image,
+      category,
+      description,
+      price,
+    }: IProduct = req.body;
 
-    const product = await Product.create({
+    const product = new Product({
       title,
       image,
       category,
@@ -30,9 +35,11 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
       price,
     });
 
-    return res.status(201).json(product);
+    const savedProduct = await product.save();
+
+    return res.status(201).json(savedProduct);
   } catch (error: unknown) {
-    if (error instanceof Error && 'name' in error && error.name === 'ValidationError') {
+    if (error instanceof Error && error.name === 'ValidationError') {
       return next(new BadRequestError(error.message));
     }
 
