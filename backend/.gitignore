@@ -4,7 +4,7 @@ logs
 npm-debug.log*
 
 # Dependency directory
-node_modules
+node_modules/
 
 # Optional npm cache directory
 .npm
@@ -15,6 +15,7 @@ node_modules
 .vscode
 
 # Typescript build
-dist
-temp
+dist/
+public/
+temp/
 .env
